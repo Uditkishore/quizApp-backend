@@ -23,4 +23,4 @@ app.get("/", (req, res) => {
   res.send("Welcome to my API");
 });
 
-app.listen(PORT, "0.0.0.0", () => console.log(`Server running on port ${port}`)); // Removed unnecessary arrow function syntax error
+app.listen(PORT, "0.0.0.0", () => console.log(`Server running on port ${PORT}`)); // Removed unnecessary arrow function syntax error
