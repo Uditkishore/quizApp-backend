@@ -5,15 +5,13 @@ const cors = require('cors');
 const Routes = require('./routes/index');
 
 const app = express();
-const port = 5000;
+const port = 3001;
 
 app.use(bodyParser.json());
 app.use(cors());
 
-mongoose.connect('mongodb+srv://uditkishor:uditkishor@cluster0.uinlam3.mongodb.net/', {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-}).then(() => console.log('MongoDB connected'))
+mongoose.connect('mongodb+srv://uditkishor:uditkishor@cluster0.uinlam3.mongodb.net/', {})
+  .then(() => console.log('MongoDB connected'))
   .catch(err => console.log(err));
 
 app.use('/api', Routes);
