@@ -16,4 +16,8 @@ mongoose.connect('mongodb+srv://uditkishor:uditkishor@cluster0.uinlam3.mongodb.n
 
 app.use('/api', Routes);
 
+app.get("/", (req, res)=>{
+  res.send("Welcome to my API");
+})
+
 app.listen(port, () => console.log(`Server running on port ${port}`));
