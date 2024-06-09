@@ -5,7 +5,7 @@ const cors = require('cors');
 const Routes = require('./routes/index');
 
 const app = express();
-const port = process.env.PORT || 3001; // Use the PORT environment variable if available, otherwise default to 3001
+const PORT = process.env.PORT || 3001; // Use the PORT environment variable if available, otherwise default to 3001
 
 app.use(bodyParser.json());
 app.use(cors());
@@ -23,4 +23,4 @@ app.get("/", (req, res) => {
   res.send("Welcome to my API");
 });
 
-app.listen(port, "0.0.0.0", () => console.log(`Server running on port ${port}`)); // Removed unnecessary arrow function syntax error
+app.listen(PORT, "0.0.0.0", () => console.log(`Server running on port ${port}`)); // Removed unnecessary arrow function syntax error
