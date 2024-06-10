@@ -15,8 +15,10 @@ const createUser = async (req, res) => {
 const userLogin = async (req, res) => {
     try {
         const { email, password } = req.body;
-        const user = await User.findOne({ email });
-        if (!user) {
+
+        const user = await User.findOne({ email , password });
+        console.log('user', user);
+        if (!user || user === null) {
             return res.status(404).json({ message: 'User not found' });
         }
         const token = jwt.sign({ id: user._id }, "QuizUser", { expiresIn: '1h' });
