@@ -2,7 +2,7 @@ const express = require('express');
 const {
     getAllScore,
     postScore,
-    updateScore,
+    getResponseById,
     deleteScore,
     deleteAll
 } = require('../controllers/score');
@@ -10,7 +10,7 @@ const router = express.Router();
 
 router.get('/all', getAllScore);
 router.post('/create', postScore);
-router.put('/update/:uuid', updateScore);
+router.get('/response/:uuid', getResponseById);
 router.delete('/delete/:uuid', deleteScore);
 router.delete('/delete/all', deleteAll);
 

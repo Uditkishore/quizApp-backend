@@ -3,7 +3,27 @@ const Score = require('../models/Score');
 
 const getAllScore = async (req, res) => {
     try {
-        const scores = await Score.find();
+        const scores = await Score.aggregate([
+            {
+                '$lookup': {
+                    'from': 'users',
+                    'localField': 'userId',
+                    'foreignField': '_id',
+                    'as': 'userDetails'
+                }
+            }, {
+                '$unwind': {
+                    'path': '$userDetails'
+                }
+            }, {
+                '$project': {
+                    'userId': true,
+                    'score': true,
+                    'createdAt': true,
+                    'name': '$userDetails.name'
+                }
+            }
+        ])
         res.status(200).json(scores);
     } catch (err) {
         res.status(500).json({ message: err.message });
@@ -40,15 +60,53 @@ const postScore = async (req, res) => {
     }
 };
 
-const updateScore = async (req, res) => {
-    const { body, params: { uuid } } = req;
+const { ObjectId } = require('mongoose').Types;
+
+const getResponseById = async (req, res) => {
+    const { uuid } = req.params;
     try {
-        const savedScore = await Score.findOneAndUpdate({ _id: uuid }, body, { new: true });
-        res.status(200).json(savedScore);
+        const score = await Score.aggregate([
+            {
+                $match: { _id: new ObjectId(uuid) }
+            },
+            {
+                $unwind: '$answer'
+            },
+            {
+                $lookup: {
+                    from: 'quizzes',
+                    localField: 'answer.questionId',
+                    foreignField: '_id',
+                    as: 'quiz'
+                }
+            },
+            {
+                $unwind: '$quiz'
+            },
+            {
+                $project: {
+                    _id: 0,
+                    question: '$quiz.question',
+                    isCorrect: '$answer.isCorrect'
+                }
+            }
+        ]);
+
+        if (score.length === 0) {
+            return res.status(404).json({ status: false, message: 'Score not found' });
+        }
+
+        const answers = score.map(item => ({
+            question: item.question,
+            isCorrect: item.isCorrect
+        }));
+
+        res.status(200).json({ status: true, data: answers });
     } catch (err) {
-        res.status(500).json({ message: err.message });
+        res.status(500).json({ status: false, message: err.message });
     }
 };
+
 
 const deleteScore = async (req, res) => {
     const { uuid } = req.params;
@@ -72,7 +130,7 @@ const deleteAll = async (req, res) => {
 module.exports = {
     getAllScore,
     postScore,
-    updateScore,
+    getResponseById,
     deleteScore,
     deleteAll
 };
